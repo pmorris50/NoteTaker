@@ -7,6 +7,7 @@ const PORT = process.env.port || 3001;
 const { v4: uuidv4} = require('uuid');
 
 const uuid = require('uuid');
+const { stringify } = require('querystring');
 console.log(`Here is a test v1 uuid: ${uuid.v1()}`); //use this one
 console.log(`Here is a test v4 uuid: ${uuid.v4()}`);
 
@@ -63,17 +64,46 @@ app.post('/api/notes', (req, res) => {
         }
        })
     }});
-  
+
+
+  //display note on right side when clicked
+  app.get('/api/notes/:id', (req, res) =>{
+    const {title, text} = req.body
+    const dbCopy = require('./db/db.json')
+    if(req.body){
+        const displayNote = {
+            title, 
+            text
+        } 
+    }
+    console.log(req.body)
+    res.send(displayNote);
+  })
 
     //add a new note to the db.json file and return new note to client
 
-app.delete('/api/notes/:id', (res, req) =>{
-    // .filter
-    const notesID = req.params.id
-    readFromFile('./db.json')
-    .then((data) => JSON.parse(data))
-    //delete notes, give each note a specific ID number 
-})
+
+app.delete('/api/notes/:id', (req, res) => {
+    const notesCopy = require('./db/db.json');
+   //const data = JSON.parse(notesCopy)
+    const notes = notesCopy.filter(noteCopy => noteCopy.noteID !== req.params.id);
+    const dnotes = JSON.stringify(notes)
+  
+    fs.writeFile('./db/db.json', dnotes, (err) => {
+      if (err) throw err;
+      res.send('Note successfully deleted');
+    });
+  });
+// app.delete('/api/notes/:id', (req, res) =>{
+//     const notesCopy = require('./db/db.json')
+//     notesIDs = []
+//     notesCopy.filter(notesCopy.noteID)
+    
+//     // const notesID = req.params.id
+//     // readFromFile('./db.json')
+//     // .then((data) => JSON.parse(data))
+//     //delete notes, give each note a specific ID number 
+// })
 
 
 
