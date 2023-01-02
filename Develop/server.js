@@ -30,14 +30,14 @@ app.get('/notes', (req, res) => {
 // GET Route to send back to home page 
 
 
-//Get Route to return all saved notes as JSON
+//Get Route to return all saved notes as JSON to notes.html
 app.get('/api/notes', (req, res) => {
     fs.readFile('./db/db.json', 'utf8', (err, data) => {
         if(err) throw err;
         const notes = JSON.parse(data);
         res.json(notes);
     })
-   // res.json(//all saved notes)
+  
 })
 //const db = require("./db/db.json")
 // console.log(db)
@@ -51,7 +51,7 @@ app.post('/api/notes', (req, res) => {
         const newNote = {
             title,
             text,
-            noteID: uuid.v4(), //giving a unique id to each note
+            id: uuid.v4(), //giving a unique id to each note
         };
         dbCopy.push(newNote)
         const data = JSON.stringify(dbCopy)
@@ -74,26 +74,43 @@ app.post('/api/notes', (req, res) => {
         const displayNote = {
             title, 
             text
-        } 
+        }
+        res.send(displayNote);
     }
     console.log(req.body)
-    res.send(displayNote);
   })
 
-    //add a new note to the db.json file and return new note to client
 
 
-app.delete('/api/notes/:id', (req, res) => {
-    const notesCopy = require('./db/db.json');
-   //const data = JSON.parse(notesCopy)
-    const notes = notesCopy.filter(noteCopy => noteCopy.noteID !== req.params.id);
-    const dnotes = JSON.stringify(notes)
-  
-    fs.writeFile('./db/db.json', dnotes, (err) => {
+  app.delete('/api/notes/:id', (req, res) => {
+    fs.readFile('./db/db.json', (err, data) => {
       if (err) throw err;
-      res.send('Note successfully deleted');
+  
+      const notes = JSON.parse(data).filter(note => note.id !== req.params.id);
+    
+      fs.writeFile('./db/db.json', JSON.stringify(notes), (err) => {
+        if (err) throw err;
+        res.send('Note successfully deleted');
+      });
     });
   });
+  
+// app.delete('/api/notes/:id', (req, res) => {
+//     const notesCopy = fs.readFile('./db/db.json');
+    
+//     const notes = data.filter(notesCopy => notesCopy.id !== req.params.id);
+//     const dnotes = JSON.stringify(notes)
+  
+//     fs.writeFile('./db/db.json', dnotes, (err) => {
+//       if (err) throw err;
+//       res.send('Note successfully deleted');
+//     });
+//   });
+
+
+
+
+
 // app.delete('/api/notes/:id', (req, res) =>{
 //     const notesCopy = require('./db/db.json')
 //     notesIDs = []
@@ -110,9 +127,9 @@ app.delete('/api/notes/:id', (req, res) => {
 
 
 
-// app.get('*', (req, res) => {
-//     res.sendFile(path.join(__dirname, '/public/index.html'))
-// })
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '/public/index.html'))
+})
 
 
 app.listen(PORT, ()=> {
