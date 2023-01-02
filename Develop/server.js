@@ -94,37 +94,6 @@ app.post('/api/notes', (req, res) => {
       });
     });
   });
-  
-// app.delete('/api/notes/:id', (req, res) => {
-//     const notesCopy = fs.readFile('./db/db.json');
-    
-//     const notes = data.filter(notesCopy => notesCopy.id !== req.params.id);
-//     const dnotes = JSON.stringify(notes)
-  
-//     fs.writeFile('./db/db.json', dnotes, (err) => {
-//       if (err) throw err;
-//       res.send('Note successfully deleted');
-//     });
-//   });
-
-
-
-
-
-// app.delete('/api/notes/:id', (req, res) =>{
-//     const notesCopy = require('./db/db.json')
-//     notesIDs = []
-//     notesCopy.filter(notesCopy.noteID)
-    
-//     // const notesID = req.params.id
-//     // readFromFile('./db.json')
-//     // .then((data) => JSON.parse(data))
-//     //delete notes, give each note a specific ID number 
-// })
-
-
-
-
 
 
 app.get('*', (req, res) => {
